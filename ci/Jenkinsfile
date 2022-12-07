@@ -33,6 +33,9 @@ pipeline {
             }
         
         stage('Run') {
+            when { 
+                expression { params.RUN }
+            }
             steps {
                 sh 'ls'
                 sh "chmod +x deliver.sh && ./deliver.sh"
@@ -44,6 +47,7 @@ pipeline {
             steps{
                 sh 'echo Build $params.BUILD_NAME completed successfully'
                 sh 'echo I have now completed ACIT 4850!'
+                sh 'echo Student #A01199153 and Group #4'
             }
         }
         }
