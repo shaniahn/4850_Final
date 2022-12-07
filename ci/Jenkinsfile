@@ -17,7 +17,6 @@ pipeline {
 
         stage('Code Quantity') {
             steps {
-                sh 'ls'
                 sh 'cd src/main/java/com/mycompany/app && cat App.java | wc -l' 
             }
         }
@@ -35,6 +34,7 @@ pipeline {
         
         stage('Run') {
             steps {
+                sh 'ls'
                 sh "chmod +x ./scripts/deliver.sh"
                 sh './scripts/deliver.sh'
             }
