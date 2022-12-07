@@ -47,7 +47,7 @@ pipeline {
             steps{
                 sh 'echo Build $params.BUILD_NAME completed successfully'
                 sh 'echo I have now completed ACIT 4850!'
-                sh 'echo Student #A01199153 and Group #4'
+                sh 'echo Student Number A01199153 and Group Number 4'
             }
         }
         }
