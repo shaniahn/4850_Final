@@ -19,6 +19,7 @@ pipeline {
             steps {
                 sh 'ls'
                 sh 'cd src/main/java/com/mycompany/app' 
+                sh 'ls'
                 sh 'cat App.java | wc -l'
             }
         }
