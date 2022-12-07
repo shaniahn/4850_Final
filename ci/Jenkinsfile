@@ -35,7 +35,7 @@ pipeline {
         stage('Run') {
             steps {
                 sh 'ls'
-                sh "chmod +x deliver.sh && deliver.sh"
+                sh "chmod +x deliver.sh && ./deliver.sh"
             }
 
         }
