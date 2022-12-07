@@ -1,80 +1,50 @@
+// Shaniah Nizzar Dec 7, 2022 - This is a pipeline for a Java Application
+
 pipeline {
     agent any
     parameters {
-        booleanParam(defaultValue: false, description:'Deploy the App', name: 'DEPLOY')
+        booleanParam(defaultValue: false, description:'Whether to Run the Code', name: 'RUN')
+        string(defaultValue: 'Latest', description:'Name of build', name:'BUILD_NAME')
     }
     stages {
         stage('Build') {
             steps {
-                //cleanWs()
-                sh 'echo in steps'
+                sh 'echo Starting Build...'
+                sh 'mvn -B -DskipTests clean install'
+                sh 'echo Build Complete.'
             }
         }
+
+        stage('Code Quantity') {
+            steps {
+                sh 'cd /src && cat App.java | wc -l'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+            }
+        
+        stage('Run') {
+            steps {
+                sh "chmod +x ./scripts/deliver.sh"
+                sh './scripts/deliver.sh'
+            }
+
+        }
+
+        stage('Build Results') {
+            steps{
+                sh 'echo Build $params.BUILD_NAME completed successfully'
+                sh 'echo I have now completed ACIT 4850!'
+            }
+        }
+        }
     }
-}
-//         stage('Python Lint') {
-//             steps {
-//                     //sh 'pylint-fail-under --fail_under 5 *.py'
-//                     sh 'pylint --fail-under=5.0 *.py'
-//                 }
-//             }
-//         stage('Test and Coverage') {
-//             steps {
-//                     script {
-//                         // def test_reports_exist = fileExists "test-reports/*.xml"
-//                         def test_reports_find = findFiles glob: 'test-reports/*.xml'
-//                         boolean test_reports_exist = test_reports_find.length > 0
-//                         echo """${test_reports_exist}"""
-                        
-//                         if (test_reports_exist) {                        
-//                             sh 'echo Removing'
-//                             sh 'rm test-reports/*.xml'
-//                         }
-//                         def files = findFiles(glob: "**/test_*.py")
-//                         echo """${files}"""
-                        
-//                         for (file in files) {
-//                             sh 'pwd'
-//                             // sh "python3 ${file.path}"
-//                             sh "coverage run --omit */site-packages/*,*/dist-packages/* ${file.path}"
-//                         }
-//                         sh 'coverage report'
-//                     }
-//                 }
-//             post {
-//                 always {
-//                     sh 'ls'
-//                     junit 'test-reports/*.xml'
-//                 }   
-//             }
-//         }
-//         stage('Package') {
-//             when {
-//                 expression { env.GIT_BRANCH == 'origin/main' }
-//             }
-//             steps {
-//                 withCredentials([string(credentialsId: 'DockerHub', variable: 'TOKEN')]) {
-//                     sh "docker login -u 'shaniahn' -p '$TOKEN' docker.io"
-//                     sh "docker build -t ${dockerRepoName}:latest --tag shaniahn/${dockerRepoName}:${imageName} ."
-//                     sh "docker push shaniahn/${dockerRepoName}:${imageName}"
-//                 }
-//             }
-//         }
-//         stage('Zip Artifacts') {
-//             steps {
-//                     sh 'zip app.zip *.py'
-//                     archiveArtifacts artifacts: '*.zip'
-//                 }
-//             }
-//         stage('Deliver') {
-//             when {
-//                 expression { params.DEPLOY }
-//             }
-//             steps {
-//                 sh "docker stop ${dockerRepoName} || true && docker rm ${dockerRepoName} || true"
-//                 sh "docker run -d -p ${portNum}:${portNum} --name ${dockerRepoName} ${dockerRepoName}:latest"
-//             }
-//         }
-//     }
-// }
-////
