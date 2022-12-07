@@ -18,7 +18,8 @@ pipeline {
         stage('Code Quantity') {
             steps {
                 sh 'ls'
-                sh 'cd src/main && cat App.java | wc -l'
+                sh 'cd src/main' 
+                sh 'cat App.java | wc -l'
             }
         }
 
